@@ -162,6 +162,9 @@ class Subprocess(object):
         otherprocess.stdin = self
         return otherprocess
 
+    def wait(self):
+        return self._process.communicate()
+
 
 def run(*args, **kwargs):
     """
