@@ -130,7 +130,7 @@ class Subprocess(object):
         return ret
 
     def __repr__(self):
-        return '<Subprocess {!r}>'.format(name, str(self))
+        return '<Subprocess {!r}>'.format(str(self))
 
     def pipe(self, *args):
         r"""
