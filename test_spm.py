@@ -36,6 +36,20 @@ class RunTest(TempFileMixin, unittest.TestCase):
 
         assert six.b(cat.stdout.read()) == content
 
+    def test_stdout_to_file(self):
+        string = '__output__'
+
+        fname = self.get_temp_filename()
+
+        echo = run('echo', '-n', string)
+        echo.stdout = open(fname, 'w')
+        out, err = echo.wait()
+
+        assert out is None
+
+        with open(fname) as file_:
+            assert six.u(file_.read()) == string
+
 
 class PipeTest(TempFileMixin, unittest.TestCase):
     def test_stdin_from_file(self):
@@ -44,6 +58,19 @@ class PipeTest(TempFileMixin, unittest.TestCase):
         fname = self.get_temp_filename()
         with open(fname, 'w') as file_:
             file_.write(content)
+
+    def test_stdout_to_file(self):
+        string = '__output__'
+        fname = self.get_temp_filename()
+
+        echo = run('echo', '-n', string)
+        echo.stdout = open(fname, 'w')
+        out, err = echo.wait()
+
+        assert out is None
+
+        with open(fname) as file_:
+            assert six.u(file_.read()) == string
 
 if __name__ == '__main__':
     unittest.main()

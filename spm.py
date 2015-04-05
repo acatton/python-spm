@@ -56,7 +56,6 @@ class Subprocess(object):
 
     def _get_popen_kwargs(self):
         kwargs = dict(args=self._args,
-                      stdout=subprocess.PIPE,
                       )
 
         if self._stdin is None:
@@ -69,11 +68,26 @@ class Subprocess(object):
             raise TypeError("stdin can't be anything else than another process "
                             "or a file")
 
+        if self._stdout is None:
+            kwargs.update(stdout=subprocess.PIPE)
+        elif hasattr(self._stdout, 'fileno'):  # File-like object
+            kwargs.update(stdout=self._stdout)
+        else:
+            raise TypeError("stdout can't be anything else than a file.")
+
         return kwargs
 
     @property
     def stdout(self):
         return self._process.stdout
+
+    @stdout.setter
+    def stdout(self, value):
+        if self._process.is_running:
+            raise RuntimeError("Can't change stdout of a running process")
+
+        self._stdout = value
+        getattr(self, 'stdout')  # Force the subprocess to run
 
     @property
     def stdin(self):
