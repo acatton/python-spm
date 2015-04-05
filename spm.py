@@ -43,7 +43,7 @@ empty_environ = type('empty_environ', (dict, ), {})()
 
 @six.python_2_unicode_compatible
 class Subprocess(object):
-    def __init__(self, args, stdin=None, stdout=None, stderr=None, env=None):
+    def __init__(self, args, stdin=None, stdout=None, stderr=stderr, env=None):
         if env is None:
             env = {}  # Default argument
 
