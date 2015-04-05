@@ -19,7 +19,7 @@ class PyTest(TestCommand):
         import pytest
         pytest.main(self.test_args)
 
-version = '0.9.0'
+version = '0.9.1'
 
 setup(name='spm',
       version=version,
