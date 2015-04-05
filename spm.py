@@ -63,7 +63,7 @@ class Subprocess(object):
             kwargs.update(stdin=subprocess.PIPE)
         elif isinstance(self._stdin, Subprocess):
             kwargs.update(stdin=self._stdin.stdout)
-        elif isinstance(self._stdin, file):
+        elif hasattr(self._stdin, 'fileno'):  # File-like object
             kwargs.update(stdin=self._stdin)
         else:
             raise TypeError("stdin can't be anything else than another process "
