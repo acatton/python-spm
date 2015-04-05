@@ -59,6 +59,11 @@ class PipeTest(TempFileMixin, unittest.TestCase):
         with open(fname, 'w') as file_:
             file_.write(content)
 
+        cat = run('gzip').pipe('zcat')
+        cat.stdin = open(fname)
+
+        assert cat.stdout.read().decode() == content
+
     def test_stdout_to_file(self):
         string = '__output__'
         fname = self.get_temp_filename()
