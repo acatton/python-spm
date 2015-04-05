@@ -1,6 +1,16 @@
 spm (SubProcessesManager)
 =========================
 
+.. code:: python
+
+    >>> import spm
+    >>> spm.run('echo', '-n', 'hello world').stdout.read()
+    'hello world'
+    >>> import functools
+    >>> git = functools.partial(spm.run, 'git')
+    >>> git('status', '-z').stdout.read().split(b'\x00')
+    [' M spm.py', '']
+
 This provides a very thin KISS layer on top of the python standard library's
 ``subprocess`` module. This library supports Python 2 and Python 3.
 
