@@ -181,7 +181,7 @@ def pipe(arg_list):
     Pipe many commands::
 
         >>> noop = pipe([['gzip'], ['gzip'], ['zcat'], ['zcat']])
-        >>> noop.stdin.write('foo')
+        >>> _ = noop.stdin.write('foo'.encode())  # Ignore output in Python 3
         >>> noop.stdin.close()
         >>> print(noop.stdout.read().decode())
         foo

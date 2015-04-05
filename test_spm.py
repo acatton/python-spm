@@ -34,7 +34,7 @@ class RunTest(TempFileMixin, unittest.TestCase):
         cat = run('cat')
         cat.stdin = open(fname)
 
-        assert six.b(cat.stdout.read()) == content
+        assert cat.stdout.read().decode() == content
 
     def test_stdout_to_file(self):
         string = '__output__'
