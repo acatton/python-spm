@@ -1,3 +1,9 @@
 # Python files
 *.py[cod]
 __pycache__
+
+# Setuptools
+/*.egg-info
+/dist/
+/.eggs/
+/*.egg
