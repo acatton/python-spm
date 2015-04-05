@@ -98,7 +98,7 @@ class Subprocess(object):
 
             if not isinstance(value, Subprocess):
                 # If the value is something else than a subprocess
-                # invoque the process. _LazyPopen.stdout will invoke it.
+                # invoke the process. _LazyPopen.stdout will invoke it.
                 getattr(self, 'stdout')
 
     @property
