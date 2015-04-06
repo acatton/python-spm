@@ -117,8 +117,7 @@ class Subprocess(object):
 
     @property
     def returncode(self):
-        self._process.poll()
-        return self._process.returncode
+        return self._process.poll()
 
     def __str__(self):
         ret = ''
