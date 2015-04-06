@@ -176,22 +176,22 @@ def run(*args, **kwargs):
     return Subprocess(args)
 
 
-def pipe(arg_list):
+def pipe(*arguments):
     """
     Pipe many commands::
 
-        >>> noop = pipe([['gzip'], ['gzip'], ['zcat'], ['zcat']])
+        >>> noop = pipe(['gzip'], ['gzip'], ['zcat'], ['zcat'])
         >>> _ = noop.stdin.write('foo'.encode())  # Ignore output in Python 3
         >>> noop.stdin.close()
         >>> print(noop.stdout.read().decode())
         foo
     """
-    if len(arg_list) == 0:
-        raise ValueError("arg_list needs at least one item")
+    if len(arguments) == 0:
+        raise ValueError("arguments needs at least one item")
 
-    cmd, arg_list = arg_list[0], arg_list[1:]
+    cmd, arguments = arguments[0], arguments[1:]
 
     acc = run(*cmd)
-    for cmd in arg_list:
+    for cmd in arguments:
         acc = acc.pipe(*cmd)
     return acc
