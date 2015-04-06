@@ -83,11 +83,13 @@ Here are the existing libraries:
 * sh_: doing too much. The programming interface for piping commands is
   complex and bad.
 * execute_: old, vulnerable to shell injection.
+* sarge_: doing too much, vulnerable to shell injection.
 
 And many other are unmaintained or worse.
 
 .. _sh: https://amoffat.github.io/sh/
 .. _execute: https://pythonhosted.org/execute/
+.. _sarge: http://sarge.readthedocs.org/en/latest/
 
 
 What do you mean by KISS?
