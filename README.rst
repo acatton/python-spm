@@ -25,7 +25,7 @@ It only has four rules:
 * It only does one thing, and try to do it well.
 * Use argument list instead of one command string.
 
-Secure subprocess invokation
+Secure subprocess invocation
 ----------------------------
 
 For those who don't understand the last rule. There are two ways to ways to
@@ -80,7 +80,7 @@ Why another library?
 
 Here are the existing libraries:
 
-* sh_: doing to much. The programming interface for piping commands is
+* sh_: doing too much. The programming interface for piping commands is
   complex and bad.
 * execute_: old, vulnerable to shell injection.
 
@@ -93,7 +93,7 @@ And many other are unmaintained or worse.
 What do you mean by KISS?
 -------------------------
 
-KISS lost it original sense. Now it's just an hipster word which means "just
+KISS lost its original sense. Now it's just an hipster word which means "just
 use my library because it's cool".
 
 Here I mean KISS in its original sense: Keep It Simple and Stupid.
