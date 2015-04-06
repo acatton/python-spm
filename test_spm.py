@@ -70,6 +70,20 @@ class RunTest(TempFileMixin, unittest.TestCase):
 
         assert output == 'foo"bar'
 
+    def test_repr_env(self):
+        cmd_str = str(run('env', env={'FOO': 'BAR'}))
+        env = subprocess.check_output(cmd_str, shell=True).split('\n')
+
+        assert 'FOO=BAR' in env
+
+    def test_empty_env(self):
+        proc = run('env', env=empty_environ(foo='bar'))
+
+        spm_run = set(proc.stdout.read().split('\n'))
+        sh_run = set(subprocess.check_output(str(proc), shell=True).split('\n'))
+
+        assert sh_run == spm_run
+
 
 class PipeTest(TempFileMixin, unittest.TestCase):
     def test_stdin_from_file(self):

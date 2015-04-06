@@ -136,7 +136,16 @@ class Subprocess(object):
         if isinstance(self._stdin, Subprocess):
             ret += str(self._stdin) + ' | '
 
-        ret += ' '.join(six.moves.shlex_quote(i) for i in self._args)
+        if isinstance(self._env, empty_environ):
+            env = ('env', '-', )
+        elif len(self._env) > 0:
+            env = ('env', )
+        else:
+            env = tuple()
+
+        env += tuple('{}={}'.format(k, v) for k, v in self._env.items())
+
+        ret += ' '.join(six.moves.shlex_quote(i) for i in (env + self._args))
         return ret
 
     def __repr__(self):
