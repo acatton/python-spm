@@ -7,7 +7,7 @@ import os
 import unittest
 
 import six
-from spm import run, pipe
+from spm import run, pipe, empty_environ
 
 class TempFileMixin(object):
     def setUp(self):
@@ -49,6 +49,16 @@ class RunTest(TempFileMixin, unittest.TestCase):
 
         with open(fname) as file_:
             assert six.u(file_.read()) == string
+
+    def test_environment(self):
+        env = run('env', env={'FOO': 'BAR'}).stdout.read().split('\n')
+
+        assert 'FOO=BAR' in env
+
+    def test_empty_environment(self):
+        env = run('env', env=empty_environ()).stdout.read()
+
+        assert env == ''
 
 
 class PipeTest(TempFileMixin, unittest.TestCase):

@@ -2,6 +2,7 @@
 # Copyright (c) 2015 Antoine Catton
 # See the LICENSE file.
 
+import os
 import subprocess
 
 import six
@@ -38,7 +39,7 @@ class _LazyPopen(object):
 stdin = type('stdin_redirect', (object, ), {})()
 stdout = type('stdout_redirect', (object, ), {})()
 stderr = type('stderr_redirect', (object, ), {})()
-empty_environ = type('empty_environ', (dict, ), {})()
+empty_environ = type('empty_environ', (dict, ), {})
 
 
 @six.python_2_unicode_compatible
@@ -74,6 +75,16 @@ class Subprocess(object):
             kwargs.update(stdout=self._stdout)
         else:
             raise TypeError("stdout can't be anything else than a file.")
+
+        if isinstance(self._env, empty_environ):
+            kwargs.update(env=self._env.copy())
+        elif isinstance(self._env, dict):
+            if len(self._env) > 0:
+                environ = os.environ.copy()
+                environ.update(self._env)
+                kwargs.update(env=environ)
+        else:
+            raise TypeError("env has to be a dictionnary.")
 
         return kwargs
 
@@ -172,10 +183,10 @@ def run(*args, **kwargs):
         >>> print(run('echo', '-n', 'hello world').stdout.read().decode())
         hello world
     """
-    return Subprocess(args)
+    return Subprocess(args, **kwargs)
 
 
-def pipe(*arguments):
+def pipe(*arguments, **kwargs):
     """
     Pipe many commands::
 
