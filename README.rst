@@ -98,7 +98,7 @@ What do you mean by KISS?
 KISS lost its original sense. Now it's just an hipster word which means "just
 use my library because it's cool".
 
-Here I mean KISS in its original sense: Keep It Simple and Stupid.
+Here I mean KISS in its original sense: Keep It Simple, Stupid.
 
-* Simple: this library is one file with less than 500 lines (excluding testing)
-* Stupid: this library has two functions: ``pipe()`` and ``run()``
+* this library is one file with less than 500 lines (excluding testing)
+* this library has two functions: ``pipe()`` and ``run()``
