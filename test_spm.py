@@ -5,6 +5,7 @@
 import tempfile
 import os
 import unittest
+import subprocess
 
 import six
 from spm import run, pipe, empty_environ
@@ -59,6 +60,15 @@ class RunTest(TempFileMixin, unittest.TestCase):
         env = run('env', env=empty_environ()).stdout.read()
 
         assert env == ''
+
+    def test_repr(self):
+        """
+        A user should be able to run str(Subprocess) in their shell prompt.
+        """
+        cmd_str = str(run('echo', '-n', 'foo"bar'))
+        output = subprocess.check_output(cmd_str, shell=True)
+
+        assert output == 'foo"bar'
 
 
 class PipeTest(TempFileMixin, unittest.TestCase):

@@ -136,7 +136,7 @@ class Subprocess(object):
         if isinstance(self._stdin, Subprocess):
             ret += str(self._stdin) + ' | '
 
-        ret += ' '.join(self._args)
+        ret += ' '.join(six.moves.shlex_quote(i) for i in self._args)
         return ret
 
     def __repr__(self):
