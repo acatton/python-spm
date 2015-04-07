@@ -192,8 +192,16 @@ class Subprocess(object):
         self._process.poll()  # Warmup _LazyPopen of the whole pipe
         output, errors = self._wait()
 
-        if self.returncode != 0:
-            raise subprocess.CalledProcessError(self.returncode, self, output)
+        proc = self
+        while True:  # Go up in the pipe to find out if any subprocess failed
+            if proc.returncode != 0:
+                raise subprocess.CalledProcessError(
+                    proc.returncode, proc, output)
+
+            if isinstance(proc._stdin, Subprocess):
+                proc = proc._stdin
+            else:
+                break  # Exit the loop when we hit the beginning of the pipe
 
         return output, errors
 

@@ -148,5 +148,9 @@ class PipeTest(DeadLockMixin, TempFileMixin, unittest.TestCase):
 
         assert out == ''
 
+    def test_failing_pipe_command(self):
+        with self.assertRaises(subprocess.CalledProcessError):
+            pipe(['true'], ['false'], ['true']).wait()
+
 if __name__ == '__main__':
     unittest.main()
