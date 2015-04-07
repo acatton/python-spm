@@ -84,6 +84,10 @@ class RunTest(TempFileMixin, unittest.TestCase):
 
         assert sh_run == spm_run
 
+    def test_subprocess_failure(self):
+        with self.assertRaises(subprocess.CalledProcessError):
+            run('false').wait()
+
 
 class PipeTest(TempFileMixin, unittest.TestCase):
     def test_stdin_from_file(self):

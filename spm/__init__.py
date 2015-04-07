@@ -182,8 +182,13 @@ class Subprocess(object):
         return otherprocess
 
     def wait(self):
-        return self._process.communicate()
+        self._process.poll()  # Warmup _LazyPopen of the whole pipe
+        output, errors = self._process.communicate()
 
+        if self.returncode != 0:
+            raise subprocess.CalledProcessError(self.returncode, self, output)
+
+        return output, errors
 
 def run(*args, **kwargs):
     """
