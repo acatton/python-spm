@@ -35,6 +35,7 @@ class _LazyPopen(object):
 
             return getattr(self._wrapped, name)
 
+
 # Types with only one instance of it
 stdin = type('stdin_redirect', (object, ), {})()
 stdout = type('stdout_redirect', (object, ), {})()
@@ -181,14 +182,21 @@ class Subprocess(object):
         otherprocess.stdin = self
         return otherprocess
 
+    def _wait(self):  # Recursively wait from the beginning of the pipe
+        if isinstance(self._stdin, Subprocess):
+            self._stdin._process._wrapped.stdout = None  # Hide stdout
+            self._stdin._wait()
+        return self._process.communicate()
+
     def wait(self):
         self._process.poll()  # Warmup _LazyPopen of the whole pipe
-        output, errors = self._process.communicate()
+        output, errors = self._wait()
 
         if self.returncode != 0:
             raise subprocess.CalledProcessError(self.returncode, self, output)
 
         return output, errors
+
 
 def run(*args, **kwargs):
     """

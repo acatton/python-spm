@@ -6,6 +6,8 @@ import tempfile
 import os
 import unittest
 import subprocess
+import contextlib
+import signal
 
 import six
 from spm import run, pipe, empty_environ
@@ -23,6 +25,22 @@ class TempFileMixin(object):
     def tearDown(self):
         for fname in self._tempfiles:
             os.remove(fname)
+
+
+class DeadLockMixin(object):
+    @contextlib.contextmanager
+    def assertDoesNotHang(self, timeout=2):
+
+        def handler(signum, frame):
+            assert False, "Hanged for more than {} seconds".format(timeout)
+
+        signal.signal(signal.SIGALRM, handler)
+        try:
+            signal.alarm(timeout)
+            yield
+        finally:
+            signal.signal(signal.SIGALRM, signal.SIG_DFL)
+
 
 class RunTest(TempFileMixin, unittest.TestCase):
     def test_stdin_from_file(self):
@@ -89,7 +107,7 @@ class RunTest(TempFileMixin, unittest.TestCase):
             run('false').wait()
 
 
-class PipeTest(TempFileMixin, unittest.TestCase):
+class PipeTest(DeadLockMixin, TempFileMixin, unittest.TestCase):
     def test_stdin_from_file(self):
         content = '__file_content__'
 
@@ -114,6 +132,21 @@ class PipeTest(TempFileMixin, unittest.TestCase):
 
         with open(fname) as file_:
             assert six.u(file_.read()) == string
+
+    @unittest.skip("This is harder than it looks to fix.")
+    def test_safe_pipe_stdout_read(self):
+        command = pipe(['gzip'], ['zcat'])
+
+        with self.assertDoesNotHang():
+            assert command.stdout.read() == ''  # No deadlock
+
+    def test_safe_pipe_wait(self):
+        command = pipe(['gzip'], ['zcat'])
+
+        with self.assertDoesNotHang():
+            out, _ = command.wait()  # No deadlock
+
+        assert out == ''
 
 if __name__ == '__main__':
     unittest.main()
