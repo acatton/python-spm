@@ -133,7 +133,6 @@ class PipeTest(DeadLockMixin, TempFileMixin, unittest.TestCase):
         with open(fname) as file_:
             assert six.u(file_.read()) == string
 
-    @unittest.skip("This is harder than it looks to fix.")
     def test_safe_pipe_stdout_read(self):
         command = pipe(['gzip'], ['zcat'])
 

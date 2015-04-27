@@ -36,6 +36,23 @@ class _LazyPopen(object):
             return getattr(self._wrapped, name)
 
 
+class _LazyPopenAttribute(object):
+    def __init__(self, obj, attr):
+        self._obj = obj
+        self._attr = attr
+        self._wrapped = None
+
+    def __getattribute__(self, name):
+        if name in ('_obj', '_attr', '_wrapped'):
+            return super(_LazyPopenAttribute, self).__getattribute__(name)
+        else:
+            if self._wrapped is None:
+                self._wrapped = getattr(self._obj, self._attr)
+                self._obj._parent._get_popen_attr()
+
+            return getattr(self._wrapped, name)
+
+
 # Types with only one instance of it
 stdin = type('stdin_redirect', (object, ), {})()
 stdout = type('stdout_redirect', (object, ), {})()
@@ -89,9 +106,18 @@ class Subprocess(object):
 
         return kwargs
 
+    def _get_popen_attr(self):
+        if isinstance(self._stdin, Subprocess):
+            self._stdin._process._wrapped.stdout = None
+            self._stdin._get_popen_attr()
+        elif hasattr(self._process.stdin, 'close'):
+            if not self._process.stdin.closed:
+                self._process.stdin.flush()
+                self._process.stdin.close()
+
     @property
     def stdout(self):
-        return self._process.stdout
+        return _LazyPopenAttribute(self._process, 'stdout')
 
     @stdout.setter
     def stdout(self, value):
