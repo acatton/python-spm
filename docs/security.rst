@@ -157,12 +157,12 @@ implented this way:
 Why spm isn't vulnerable to shell injection by default
 ------------------------------------------------------
 
-In order to prevent shell injection, you have to sanitize every data passed to
-the shell. This requires discipline, and everybody knows that even with
-discipline, humans make errors.
+In order to prevent shell injection, you have to sanitize every piece data
+passed to the shell. This requires discipline, and everybody knows that even
+with discipline, humans make errors.
 
-On the other hand, ``spm.run()`` doesn't allow for sql injection since it
-requires arguments to be passed as a list.
+On the other hand, ``spm.run()`` doesn't allow for shell injection since it
+requires arguments to be passed as a list. (= directly to ``exec()``)
 
 The only way to create shell injection would be to call spm this way (which
 defeats the purpose of spm):
