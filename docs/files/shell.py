@@ -16,7 +16,7 @@ def lookup(command):
         >>> lookup('ls')
         '/usr/bin/ls'
         >>> lookup('usermod')
-        '/sbin/usermod'
+        '/usr/sbin/usermod'
         >>> lookup('foobar')
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
@@ -68,11 +68,12 @@ def execute(path, arguments):
             pass  # The subprocess was already finish
         return
 
+if __name__ == '__name__':
 
-while True:
-    line = input('$ ')
+    while True:
+        line = input('$ ')
 
-    if line.strip() == 'exit':  # Wants to exit the shell
-        break
+        if line.strip() == 'exit':  # Wants to exit the shell
+            break
 
-    run(line)
+        run(line)
