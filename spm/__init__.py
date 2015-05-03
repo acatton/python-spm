@@ -62,6 +62,14 @@ empty_environ = type('empty_environ', (dict, ), {})
 
 @six.python_2_unicode_compatible
 class Subprocess(object):
+    """
+    Subprocess object used to access properties of the subprocess such as its
+    returncode.
+
+    You shouldn't have to instanciate this class. ``run()`` and ``pipe()`` will
+    do it for you.
+    """
+
     def __init__(self, args, stdin=None, stdout=None, stderr=stderr, env=None):
         if env is None:
             env = {}  # Default argument
@@ -117,6 +125,10 @@ class Subprocess(object):
 
     @property
     def stdout(self):
+        """
+        Set the stdout of the subprocess. It should be a file. If its ``None``
+        it could be read from the main process.
+        """
         return _LazyPopenAttribute(self._process, 'stdout')
 
     @stdout.setter
@@ -129,6 +141,10 @@ class Subprocess(object):
 
     @property
     def stdin(self):
+        """
+        Set the stdin of the subprocess. It should be a file. If its ``None``
+        it will be a pipe to wich you can write from the main process.
+        """
         if isinstance(self._stdin, Subprocess):
             return self._stdin.stdin
         else:
@@ -155,6 +171,10 @@ class Subprocess(object):
 
     @property
     def returncode(self):
+        """
+        Return the the returncode of the subprocess. If the subprocess isn't
+        terminated yet, it will return ``None``.
+        """
         return self._process.poll()
 
     def __str__(self):
@@ -215,6 +235,16 @@ class Subprocess(object):
         return self._process.communicate()
 
     def wait(self):
+        """
+        Waits for the subprocess to finish, and then return a tuple of its
+        stdout and stderr::
+
+            >>> run('echo', '-n', 'Hello, World').wait()
+            ('Hello, World', None)
+
+        If there's no error, the stderr is ``None``. If the process fails (has
+        a non-zero exit code) it raises a ``subprocess.CalledProcessError``.
+        """
         self._process.poll()  # Warmup _LazyPopen of the whole pipe
         output, errors = self._wait()
 
@@ -238,6 +268,8 @@ def run(*args, **kwargs):
 
         >>> print(run('echo', '-n', 'hello world').stdout.read().decode())
         hello world
+
+    Returns a Subprocess.
     """
     return Subprocess(args, **kwargs)
 
@@ -251,6 +283,8 @@ def pipe(*arguments, **kwargs):
         >>> noop.stdin.close()
         >>> print(noop.stdout.read().decode())
         foo
+
+    Returns a Subprocess.
     """
     if len(arguments) == 0:
         raise ValueError("arguments needs at least one item")

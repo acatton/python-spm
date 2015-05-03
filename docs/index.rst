@@ -7,7 +7,7 @@ Install::
 
 Use:
 
-.. code-block:: python
+.. doctest::
 
     >>> from spm import run, pipe, empty_environ
     >>> run('cat', '/etc/passwd')
@@ -36,6 +36,7 @@ Go further:
    :maxdepth: 2
 
    security
+   usage
 
 
 
