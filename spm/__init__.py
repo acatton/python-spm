@@ -178,7 +178,7 @@ class Subprocess(object):
     def __repr__(self):
         return '<Subprocess {!r}>'.format(str(self))
 
-    def pipe(self, *args):
+    def pipe(self, *args, **kwargs):
         r"""
         Pipe processes together. pipe() can receive an argument list or a
         subprocess.
@@ -203,7 +203,7 @@ class Subprocess(object):
                 raise ValueError("Can't attach the output to the input of a "
                                  "running process.")
         else:
-            otherprocess = run(*args)
+            otherprocess = run(*args, **kwargs)
 
         otherprocess.stdin = self
         return otherprocess
@@ -257,7 +257,7 @@ def pipe(*arguments, **kwargs):
 
     cmd, arguments = arguments[0], arguments[1:]
 
-    acc = run(*cmd)
+    acc = run(*cmd, **kwargs)
     for cmd in arguments:
-        acc = acc.pipe(*cmd)
+        acc = acc.pipe(*cmd, **kwargs)
     return acc

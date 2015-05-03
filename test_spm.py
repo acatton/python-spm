@@ -106,6 +106,11 @@ class RunTest(TempFileMixin, unittest.TestCase):
         with self.assertRaises(subprocess.CalledProcessError):
             run('false').wait()
 
+    def test_environement_on_pipe(self):
+        proc = pipe(['env'], ['egrep', '^FOO='], env={'FOO': 'BAR'})
+
+        assert proc.stdout.read() == 'FOO=BAR\n'
+
 
 class PipeTest(DeadLockMixin, TempFileMixin, unittest.TestCase):
     def test_stdin_from_file(self):
