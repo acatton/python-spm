@@ -111,6 +111,10 @@ class RunTest(TempFileMixin, unittest.TestCase):
 
         assert proc.stdout.read() == 'FOO=BAR\n'
 
+    def test_pass_subprocess_to_pipe(self):
+        proc = pipe(['echo', '-n', 'hello'], ['gzip'], run('zcat'))
+        assert proc.stdout.read() == 'hello'
+
 
 class PipeTest(DeadLockMixin, TempFileMixin, unittest.TestCase):
     def test_stdin_from_file(self):

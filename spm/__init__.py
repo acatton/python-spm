@@ -293,5 +293,8 @@ def pipe(*arguments, **kwargs):
 
     acc = run(*cmd, **kwargs)
     for cmd in arguments:
-        acc = acc.pipe(*cmd, **kwargs)
+        if isinstance(cmd, Subprocess):
+            acc = acc.pipe(cmd)
+        else:
+            acc = acc.pipe(*cmd, **kwargs)
     return acc
