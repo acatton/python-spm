@@ -70,12 +70,12 @@ class RunTest(TempFileMixin, unittest.TestCase):
             assert six.u(file_.read()) == string
 
     def test_environment(self):
-        env = run('env', env={'FOO': 'BAR'}).stdout.read().split('\n')
+        env = run('env', env={'FOO': 'BAR'}).stdout.read().decode().split('\n')
 
         assert 'FOO=BAR' in env
 
     def test_empty_environment(self):
-        env = run('env', env=empty_environ()).stdout.read()
+        env = run('env', env=empty_environ()).stdout.read().decode()
 
         assert env == ''
 
@@ -84,21 +84,23 @@ class RunTest(TempFileMixin, unittest.TestCase):
         A user should be able to run str(Subprocess) in their shell prompt.
         """
         cmd_str = str(run('echo', '-n', 'foo"bar'))
-        output = subprocess.check_output(cmd_str, shell=True)
+        output = subprocess.check_output(cmd_str, shell=True).decode()
 
         assert output == 'foo"bar'
 
     def test_repr_env(self):
         cmd_str = str(run('env', env={'FOO': 'BAR'}))
-        env = subprocess.check_output(cmd_str, shell=True).split('\n')
+        env = subprocess.check_output(cmd_str, shell=True).decode().split('\n')
 
         assert 'FOO=BAR' in env
 
     def test_empty_env(self):
         proc = run('env', env=empty_environ(foo='bar'))
 
-        spm_run = set(proc.stdout.read().split('\n'))
-        sh_run = set(subprocess.check_output(str(proc), shell=True).split('\n'))
+        spm_run = set(proc.stdout.read().decode().split('\n'))
+        sh_run = set(
+            subprocess.check_output(str(proc), shell=True).decode().split('\n')
+        )
 
         assert sh_run == spm_run
 
@@ -109,11 +111,11 @@ class RunTest(TempFileMixin, unittest.TestCase):
     def test_environement_on_pipe(self):
         proc = pipe(['env'], ['egrep', '^FOO='], env={'FOO': 'BAR'})
 
-        assert proc.stdout.read() == 'FOO=BAR\n'
+        assert proc.stdout.read().decode() == 'FOO=BAR\n'
 
     def test_pass_subprocess_to_pipe(self):
         proc = pipe(['echo', '-n', 'hello'], ['gzip'], run('zcat'))
-        assert proc.stdout.read() == 'hello'
+        assert proc.stdout.read().decode() == 'hello'
 
 
 class PipeTest(DeadLockMixin, TempFileMixin, unittest.TestCase):
@@ -146,7 +148,7 @@ class PipeTest(DeadLockMixin, TempFileMixin, unittest.TestCase):
         command = pipe(['gzip'], ['zcat'])
 
         with self.assertDoesNotHang():
-            assert command.stdout.read() == ''  # No deadlock
+            assert command.stdout.read().decode() == ''  # No deadlock
 
     def test_safe_pipe_wait(self):
         command = pipe(['gzip'], ['zcat'])
@@ -154,7 +156,7 @@ class PipeTest(DeadLockMixin, TempFileMixin, unittest.TestCase):
         with self.assertDoesNotHang():
             out, _ = command.wait()  # No deadlock
 
-        assert out == ''
+        assert out.decode() == ''
 
     def test_failing_pipe_command(self):
         with self.assertRaises(subprocess.CalledProcessError):

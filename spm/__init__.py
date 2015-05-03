@@ -237,10 +237,7 @@ class Subprocess(object):
     def wait(self):
         """
         Waits for the subprocess to finish, and then return a tuple of its
-        stdout and stderr::
-
-            >>> run('echo', '-n', 'Hello, World').wait()
-            ('Hello, World', None)
+        stdout and stderr.
 
         If there's no error, the stderr is ``None``. If the process fails (has
         a non-zero exit code) it raises a ``subprocess.CalledProcessError``.
