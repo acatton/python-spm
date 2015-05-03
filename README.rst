@@ -1,6 +1,9 @@
 spm (SubProcessesManager)
 =========================
 
+.. image:: https://travis-ci.org/acatton/python-spm.svg?branch=master
+    :target: https://travis-ci.org/acatton/python-spm
+
 .. code:: python
 
     >>> import spm

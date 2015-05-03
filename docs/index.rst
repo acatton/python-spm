@@ -1,6 +1,9 @@
 python-spm (Sub Process Manager) documentation
 ==============================================
 
+.. image:: https://travis-ci.org/acatton/python-spm.svg?branch=master
+    :target: https://travis-ci.org/acatton/python-spm
+
 Install::
 
     pip install spm
