@@ -106,7 +106,7 @@ provides you with an empty environment.
 
     >>> run('env', env=empty_environ()).stdout.read()
     ''
-    >>> run('env', env=empty_environ(a='b').stdout.read()
+    >>> run('env', env=empty_environ(a='b')).stdout.read()
     'a=b\n'
     >>> run('env', env=empty_environ({'FOO': 'BAR'})).stdout.read()
     'FOO=BAR\n'
