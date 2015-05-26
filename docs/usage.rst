@@ -126,7 +126,7 @@ result than calling ``wait()``.
 
     >>> print(run('echo', 'Hello'))
     echo Hello
-    >>> print(run('echo', 'Hello, world'))
+    >>> print(run('echo', 'Hello, World'))
     echo 'Hello, World'
     >>> run('echo', '$NAME')
     <Subprocess "echo '$NAME'">
