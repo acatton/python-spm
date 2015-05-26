@@ -96,7 +96,7 @@ override some variable in the environment of the subprocess.
 
     >>> 'FOO=BAR' in run('env').stdout.read().split('\n')
     False
-    >>> 'FOO=BAR' in run('env', env={'FOO': 'BAR'}.stdout.read().split('\n')
+    >>> 'FOO=BAR' in run('env', env={'FOO': 'BAR'}).stdout.read().split('\n')
     True
 
 The class ``empty_environ`` (but you should think of it as a function) also
