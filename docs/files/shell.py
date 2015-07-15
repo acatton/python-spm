@@ -68,7 +68,7 @@ def execute(path, arguments):
             pass  # The subprocess was already finish
         return
 
-if __name__ == '__name__':
+if __name__ == '__main__':
 
     while True:
         line = input('$ ')
