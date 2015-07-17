@@ -12,6 +12,7 @@ import signal
 import six
 from spm import run, pipe, empty_environ
 
+
 class TempFileMixin(object):
     def setUp(self):
         super(TempFileMixin, self).setUp()
