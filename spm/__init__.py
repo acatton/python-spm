@@ -57,7 +57,7 @@ class _LazyPopenAttribute(object):
 stdin = type('stdin_redirect', (object, ), {})()
 stdout = type('stdout_redirect', (object, ), {})()
 stderr = type('stderr_redirect', (object, ), {})()
-empty_environ = type('empty_environ', (dict, ), {})
+update_environ = type('update_environ', (dict, ), {})
 
 
 @six.python_2_unicode_compatible
@@ -102,13 +102,13 @@ class Subprocess(object):
         else:
             raise TypeError("stdout can't be anything else than a file.")
 
-        if isinstance(self._env, empty_environ):
-            kwargs.update(env=self._env.copy())
-        elif isinstance(self._env, dict):
+        if isinstance(self._env, update_environ):
             if len(self._env) > 0:
                 environ = os.environ.copy()
                 environ.update(self._env)
                 kwargs.update(env=environ)
+        elif isinstance(self._env, dict):
+            kwargs.update(env=self._env.copy())
         else:
             raise TypeError("env has to be a dictionnary.")
 
@@ -183,7 +183,7 @@ class Subprocess(object):
         if isinstance(self._stdin, Subprocess):
             ret += str(self._stdin) + ' | '
 
-        if isinstance(self._env, empty_environ):
+        if not isinstance(self._env, update_environ):
             env = ('env', '-', )
         elif len(self._env) > 0:
             env = ('env', )
@@ -209,7 +209,7 @@ class Subprocess(object):
             <BLANKLINE>
             >>> noop = run('gzip').pipe('zcat')
             >>> print(noop)
-            gzip | zcat
+            env - gzip | env - zcat
             >>> # This will be: echo -n foo | gzip | zcat
             >>> print(run('echo', '-n', 'foo').pipe(noop).stdout.read()
             ...                                                 .decode())
