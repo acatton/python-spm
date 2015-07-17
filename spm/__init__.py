@@ -271,7 +271,7 @@ def run(*args, **kwargs):
     return Subprocess(args, **kwargs)
 
 
-def pipe(*arguments, **kwargs):
+def pipe(cmd, *arguments, **kwargs):
     """
     Pipe many commands::
 
@@ -283,11 +283,6 @@ def pipe(*arguments, **kwargs):
 
     Returns a Subprocess.
     """
-    if len(arguments) == 0:
-        raise ValueError("arguments needs at least one item")
-
-    cmd, arguments = arguments[0], arguments[1:]
-
     acc = run(*cmd, **kwargs)
     for cmd in arguments:
         if isinstance(cmd, Subprocess):
