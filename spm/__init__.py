@@ -66,7 +66,7 @@ class Subprocess(object):
     Subprocess object used to access properties of the subprocess such as its
     returncode.
 
-    You shouldn't have to instanciate this class. ``run()`` and ``pipe()`` will
+    You shouldn't have to instantiate this class. ``run()`` and ``pipe()`` will
     do it for you.
     """
 
