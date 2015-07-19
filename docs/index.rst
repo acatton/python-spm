@@ -12,19 +12,19 @@ Use:
 
 .. doctest::
 
-    >>> from spm import run, pipe, empty_environ
+    >>> from spm import run, pipe, propagate_env
     >>> run('cat', '/etc/passwd')
-    <Subprocess 'cat /etc/passwd'>
+    <Subprocess 'env - cat /etc/passwd'>
     >>> run('cat', '/etc/passwd').pipe('grep', 'jdoe')
-    <Subprocess 'cat /etc/passwd | grep jdoe'>
+    <Subprocess 'env - cat /etc/passwd | env - grep jdoe'>
     >>> pipe(['gzip', '-c', '/etc/passwd'], ['zcat'])
-    <Subprocess 'gzip -c /etc/passwd | zcat'>
+    <Subprocess 'env - gzip -c /etc/passwd | env - zcat'>
     >>> run('git', 'commit', env={'GIT_COMMITTER_NAME': 'John Doe'})
-    <Subprocess "env 'GIT_COMMITTER_NAME=John Doe' git commit">
-    >>> run('ls', env=empty_environ())
-    <Subprocess 'env - ls'>
-    >>> run('ls', env=empty_environ({'FOO': 'BAR'}))
-    <Subprocess 'env - FOO=BAR ls'>
+    <Subprocess "env - 'GIT_COMMITTER_NAME=John Doe' git commit">
+    >>> run('ls', env=propagate_env())
+    <Subprocess 'ls'>
+    >>> run('ls', env=propagate_env({'FOO': 'BAR'}))
+    <Subprocess 'env FOO=BAR ls'>
     >>> run('echo', '-n', 'foo').wait()
     ('foo', None)
     >>> run('echo', '-n', 'bar').stdout.read()

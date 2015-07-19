@@ -10,7 +10,7 @@ import contextlib
 import signal
 
 import six
-from spm import run, pipe, empty_environ
+from spm import run, pipe, propagate_env
 
 class TempFileMixin(object):
     def setUp(self):
@@ -74,10 +74,15 @@ class RunTest(TempFileMixin, unittest.TestCase):
 
         assert 'FOO=BAR' in env
 
-    def test_empty_environment(self):
-        env = run('env', env=empty_environ()).stdout.read().decode()
+    def test_empty_environment_by_default(self):
+        env = run('env').stdout.read().decode()
 
         assert env == ''
+
+    def test_copy_environment_opt_in(self):
+        env = run('env', env=propagate_env({})).stdout.read().decode()
+
+        assert env != ''
 
     def test_repr(self):
         """
@@ -89,13 +94,13 @@ class RunTest(TempFileMixin, unittest.TestCase):
         assert output == 'foo"bar'
 
     def test_repr_env(self):
-        cmd_str = str(run('env', env={'FOO': 'BAR'}))
+        cmd_str = str(run('env', env=propagate_env(foo='bar')))
         env = subprocess.check_output(cmd_str, shell=True).decode().split('\n')
 
-        assert 'FOO=BAR' in env
+        assert 'foo=bar' in env
 
     def test_empty_env(self):
-        proc = run('env', env=empty_environ(foo='bar'))
+        proc = run('env', env={'foo': 'bar'})
 
         spm_run = set(proc.stdout.read().decode().split('\n'))
         sh_run = set(

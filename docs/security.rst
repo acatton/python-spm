@@ -197,3 +197,22 @@ You might be wondering "why would I need spm if I don't have any user input".
 It is recommended to use spm, since it would escape spaces, and things like this.
 
 Also it provides a more pythonic API.
+
+
+.. _environment_propagation_security:
+
+Environment propagation opt-in
+------------------------------
+
+By default, spm doesn't propagate the environment to the subprocess. The user
+has to opt-in.
+
+This prevents information leakage. If the environment was propagated by
+default, spm run from a CGI script could leak information about the user IP,
+Cookies, ...
+
+This also ensure more security. ``LD_PRELOAD`` could be passed down to the
+process and execute arbitrary code.
+
+Of course, the environment can alway be propagated. Think twice before
+propagating the environment.

@@ -3,7 +3,7 @@ Usage
 
 .. testsetup:: *
 
-    from spm import run, pipe, empty_environ
+    from spm import run, pipe, propagate_env
 
 Installation
 ------------
@@ -86,30 +86,33 @@ closing it.
     (None, None)
 
 
-Change the environment
-^^^^^^^^^^^^^^^^^^^^^^
+Propagate the environment
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 You can use the keyword argument ``env`` on ``run()`` or ``pipe()`` in order to
 override some variable in the environment of the subprocess.
 
 .. doctest::
 
-    >>> 'FOO=BAR' in run('env').stdout.read().split('\n')
-    False
-    >>> 'FOO=BAR' in run('env', env={'FOO': 'BAR'}).stdout.read().split('\n')
-    True
+    >>> run('env').stdout.read()
+    ''
+    >>> run('env', env={'FOO': 'BAR'}).stdout.read()
+    'FOO=BAR\n'
 
-The class ``empty_environ`` (but you should think of it as a function) also
-provides you with an empty environment.
+For security reasons, the environment doesn't get propagated to the subprocess.
+See :ref:`environment_propagation_security`.
+
+The class ``propagate_env`` (but you should think of it as a function) will
+propagate the environment, and update it if you pass it
 
 .. doctest::
 
-    >>> run('env', env=empty_environ()).stdout.read()
-    ''
-    >>> run('env', env=empty_environ(a='b')).stdout.read()
-    'a=b\n'
-    >>> run('env', env=empty_environ({'FOO': 'BAR'})).stdout.read()
-    'FOO=BAR\n'
+    >>> run('env', env=propagate_env()).stdout.read().decode() != ''
+    True
+    >>> 'a=b' in run('env', env=propagate_env(a='b')).stdout.read().split('\n')
+    True
+    >>> 'FOO=BAR' in run('env', env=propagate_env({'FOO': 'BAR'})).stdout.read().split('\n')
+    True
 
 
 
@@ -125,11 +128,11 @@ result than calling ``wait()``.
 .. doctest::
 
     >>> print(run('echo', 'Hello'))
-    echo Hello
+    env - echo Hello
     >>> print(run('echo', 'Hello, World'))
-    echo 'Hello, World'
+    env - echo 'Hello, World'
     >>> run('echo', '$NAME')
-    <Subprocess "echo '$NAME'">
+    <Subprocess "env - echo '$NAME'">
 
 Create command functions
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -142,9 +145,9 @@ thanks to ``functools.partial()``.
     >>> from functools import partial
     >>> git = partial(run, 'git')
     >>> git('commit')
-    <Subprocess 'git commit'>
+    <Subprocess 'env - git commit'>
     >>> git('archive', '--output=/tmp/archive.tar.gz')
-    <Subprocess 'git archive --output=/tmp/archive.tar.gz'>
+    <Subprocess 'env - git archive --output=/tmp/archive.tar.gz'>
 
 API
 ---
