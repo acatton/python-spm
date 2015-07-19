@@ -12,7 +12,7 @@ Use:
 
 .. doctest::
 
-    >>> from spm import run, pipe, update_environ
+    >>> from spm import run, pipe, propagate_env
     >>> run('cat', '/etc/passwd')
     <Subprocess 'env - cat /etc/passwd'>
     >>> run('cat', '/etc/passwd').pipe('grep', 'jdoe')
@@ -21,9 +21,9 @@ Use:
     <Subprocess 'env - gzip -c /etc/passwd | env - zcat'>
     >>> run('git', 'commit', env={'GIT_COMMITTER_NAME': 'John Doe'})
     <Subprocess "env - 'GIT_COMMITTER_NAME=John Doe' git commit">
-    >>> run('ls', env=update_environ())
+    >>> run('ls', env=propagate_env())
     <Subprocess 'ls'>
-    >>> run('ls', env=update_environ({'FOO': 'BAR'}))
+    >>> run('ls', env=propagate_env({'FOO': 'BAR'}))
     <Subprocess 'env FOO=BAR ls'>
     >>> run('echo', '-n', 'foo').wait()
     ('foo', None)

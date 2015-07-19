@@ -3,7 +3,7 @@ Usage
 
 .. testsetup:: *
 
-    from spm import run, pipe, update_environ
+    from spm import run, pipe, propagate_env
 
 Installation
 ------------
@@ -102,15 +102,16 @@ override some variable in the environment of the subprocess.
 For security reasons, the environment doesn't get propagated to the subprocess.
 See :ref:`environment_propagation_security`.
 
-The class ``update_environ`` (but you should think of it as a function) will propagate the environment, and update it if you pass it
+The class ``propagate_env`` (but you should think of it as a function) will
+propagate the environment, and update it if you pass it
 
 .. doctest::
 
-    >>> run('env', env=update_environ()).stdout.read().decode() != ''
+    >>> run('env', env=propagate_env()).stdout.read().decode() != ''
     True
-    >>> 'a=b' in run('env', env=update_environ(a='b')).stdout.read().split('\n')
+    >>> 'a=b' in run('env', env=propagate_env(a='b')).stdout.read().split('\n')
     True
-    >>> 'FOO=BAR' in run('env', env=update_environ({'FOO': 'BAR'})).stdout.read().split('\n')
+    >>> 'FOO=BAR' in run('env', env=propagate_env({'FOO': 'BAR'})).stdout.read().split('\n')
     True
 
 

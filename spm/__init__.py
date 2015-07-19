@@ -57,7 +57,7 @@ class _LazyPopenAttribute(object):
 stdin = type('stdin_redirect', (object, ), {})()
 stdout = type('stdout_redirect', (object, ), {})()
 stderr = type('stderr_redirect', (object, ), {})()
-update_environ = type('update_environ', (dict, ), {})
+propagate_env = type('propagate_env', (dict, ), {})
 
 
 @six.python_2_unicode_compatible
@@ -102,7 +102,7 @@ class Subprocess(object):
         else:
             raise TypeError("stdout can't be anything else than a file.")
 
-        if isinstance(self._env, update_environ):
+        if isinstance(self._env, propagate_env):
             if len(self._env) > 0:
                 environ = os.environ.copy()
                 environ.update(self._env)
@@ -183,7 +183,7 @@ class Subprocess(object):
         if isinstance(self._stdin, Subprocess):
             ret += str(self._stdin) + ' | '
 
-        if not isinstance(self._env, update_environ):
+        if not isinstance(self._env, propagate_env):
             env = ('env', '-', )
         elif len(self._env) > 0:
             env = ('env', )
