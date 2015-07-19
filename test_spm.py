@@ -12,6 +12,7 @@ import signal
 import six
 from spm import run, pipe, propagate_env
 
+
 class TempFileMixin(object):
     def setUp(self):
         super(TempFileMixin, self).setUp()
@@ -60,7 +61,7 @@ class RunTest(TempFileMixin, unittest.TestCase):
 
         fname = self.get_temp_filename()
 
-        echo = run('echo', '-n', string)
+        echo = run('printf', string)
         echo.stdout = open(fname, 'w')
         out, err = echo.wait()
 
@@ -88,7 +89,7 @@ class RunTest(TempFileMixin, unittest.TestCase):
         """
         A user should be able to run str(Subprocess) in their shell prompt.
         """
-        cmd_str = str(run('echo', '-n', 'foo"bar'))
+        cmd_str = str(run('printf', 'foo"bar'))
         output = subprocess.check_output(cmd_str, shell=True).decode()
 
         assert output == 'foo"bar'
@@ -119,7 +120,7 @@ class RunTest(TempFileMixin, unittest.TestCase):
         assert proc.stdout.read().decode() == 'FOO=BAR\n'
 
     def test_pass_subprocess_to_pipe(self):
-        proc = pipe(['echo', '-n', 'hello'], ['gzip'], run('zcat'))
+        proc = pipe(['printf', 'hello'], ['gzip'], run('zcat'))
         assert proc.stdout.read().decode() == 'hello'
 
 
@@ -140,7 +141,7 @@ class PipeTest(DeadLockMixin, TempFileMixin, unittest.TestCase):
         string = '__output__'
         fname = self.get_temp_filename()
 
-        echo = run('echo', '-n', string)
+        echo = run('printf', string)
         echo.stdout = open(fname, 'w')
         out, err = echo.wait()
 
