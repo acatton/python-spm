@@ -84,10 +84,10 @@ class RunTest(TempFileMixin, unittest.TestCase):
         """
         A user should be able to run str(Subprocess) in their shell prompt.
         """
-        cmd_str = str(run('printf', '%s\n', 'foo"bar'))
+        cmd_str = str(run('printf', 'foo"bar'))
         output = subprocess.check_output(cmd_str, shell=True).decode()
 
-        assert output == 'foo"bar\n'
+        assert output == 'foo"bar'
 
     def test_repr_env(self):
         cmd_str = str(run('env', env={'FOO': 'BAR'}))
