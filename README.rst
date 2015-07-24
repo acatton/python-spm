@@ -23,7 +23,7 @@ to files.
 It only has four rules:
 
 * Simple programming interface
-* Don't reinvent the wheel. (It tries uses the ``subprocess`` standard
+* Don't reimplement the wheel. (It tries uses the ``subprocess`` standard
   module as much as possible) 
 * It only does one thing, and try to do it well.
 * Use argument list instead of one command string.
